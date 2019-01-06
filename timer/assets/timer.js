@@ -124,4 +124,9 @@ $(document).ready(function() {
 
   check_nums(); // Trigger a check for initial values.
 
+  // Setup show/hide on variation options.
+  $("#variation-selector").click(function () {
+    $("#variation-options").toggle();
+  });
+
 });
