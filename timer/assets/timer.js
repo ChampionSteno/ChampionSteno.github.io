@@ -7,6 +7,11 @@ $(document).ready(function() {
   $.chronoID = 0;
   $.chronoval = 0;
 
+  $.wpm = 0;
+  $.wps = 0;
+  $.variationID = 0;
+  $.variationval = 0;
+
   $("#main_btn").prop('disabled', true);
 
   /* The text fields are listened to, and the timer value is kept updated.
@@ -29,9 +34,12 @@ $(document).ready(function() {
       $("#main_btn").prop('disabled', true);
       $("#tick_info").html("Please enter valid numbers.");
     } else {
+      $.wps = wps;
+      $.wpm = wpm;
       $.timerval = wps / (wpm / 60);
       $("#main_btn").prop('disabled', false);
-      $("#tick_info").html("Tick every " + $.timerval.toFixed(2) + " seconds.");
+      $("#tick_info").html("Tick every " + $.timerval.toFixed(2)
+        + " seconds. (" + $.wpm + " WPM)");
     }
   };
 
@@ -70,6 +78,7 @@ $(document).ready(function() {
       clearInterval($.timerID);
       clearTimeout($.stopwatchID);
       clearInterval($.chronoID);
+      clearInterval($.variationID);
       $.running = false;
 
       // Set buttons and inputs.
@@ -107,6 +116,33 @@ $(document).ready(function() {
         $('#chronometer_info').html(chrono_format());
       }, 1000);
       $('#chronometer_info').html(chrono_format());
+
+      // Set variation if necessary.
+      var var_m = + $("#input_var_m").val();
+      var var_s = + $("#input_var_s").val();
+      $.variationval = + $("#input_var_w").val();
+      if ($.variationval != 0) {
+        // Set interval to variate the WPS.
+        var var_time = 1000 * (var_s + var_m * 60);
+        $.variationID = setInterval(function () {
+          // Clear the timer, calculate new tick time, and create a new one.
+          clearInterval($.timerID);
+          $.wpm += $.variationval;
+          // If the change makes the WPM go below 0, stop it right away.
+          if ($.wpm <= 0) {
+            button_action();
+            return;
+          }
+          $.timerval = $.wps / ($.wpm / 60);
+          $.timerID = setInterval(function () {
+            $('#tick_sound')[0].play();
+          }, $.timerval * 1000);
+          // Play sound and show new interval in text.
+          $('#beep_sound')[0].play();
+          $("#tick_info").html("Tick every " + $.timerval.toFixed(2)
+            + " seconds. (" + $.wpm + " WPM)");
+        }, var_time);
+      }
 
       // Set buttons and inputs.
       $("#main_btn").html('Stop');
