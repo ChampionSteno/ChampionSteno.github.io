@@ -17,9 +17,14 @@ $(document).ready(function() {
     var wpm = + $("#input_wpm").val();
     var sw_m = + $("#input_sw_m").val();
     var sw_s = + $("#input_sw_s").val();
+    var var_m = + $("#input_var_m").val();
+    var var_s = + $("#input_var_s").val();
+    var var_w = + $("#input_var_w").val();
 
     if (isNaN(wps) || isNaN(wpm) || wps <= 0 || wpm <= 0 ||
-        isNaN(sw_m) || isNaN(sw_s) || sw_m < 0 || sw_s < 0 || sw_s >= 60) {
+        isNaN(sw_m) || isNaN(sw_s) || sw_m < 0 || sw_s < 0 || sw_s >= 60 ||
+        isNaN(var_m) || isNaN(var_s) || isNaN(var_w) || var_m < 0 ||
+        var_s < 0 || var_s >= 60) {
       // Invalid numbers.
       $("#main_btn").prop('disabled', true);
       $("#tick_info").html("Please enter valid numbers.");
@@ -38,6 +43,12 @@ $(document).ready(function() {
   $("#input_sw_s").change(check_nums);
   $("#input_sw_m").keyup(check_nums);
   $("#input_sw_s").keyup(check_nums);
+  $("#input_var_m").change(check_nums);
+  $("#input_var_s").change(check_nums);
+  $("#input_var_w").change(check_nums);
+  $("#input_var_m").keyup(check_nums);
+  $("#input_var_s").keyup(check_nums);
+  $("#input_var_w").keyup(check_nums);
 
   /* Utlity to format $.chronoval to a MM:SS string. */
   var chrono_format = function() {
@@ -67,6 +78,9 @@ $(document).ready(function() {
       $("#input_wpm").prop('disabled', false);
       $("#input_sw_m").prop('disabled', false);
       $("#input_sw_s").prop('disabled', false);
+      $("#input_var_m").prop('disabled', false);
+      $("#input_var_s").prop('disabled', false);
+      $("#input_var_w").prop('disabled', false);
       $("#chronometer_info").hide();
 
     } else {
@@ -101,6 +115,9 @@ $(document).ready(function() {
       $("#input_wpm").prop('disabled', true);
       $("#input_sw_m").prop('disabled', true);
       $("#input_sw_s").prop('disabled', true);
+      $("#input_var_m").prop('disabled', true);
+      $("#input_var_s").prop('disabled', true);
+      $("#input_var_w").prop('disabled', true);
       $("#chronometer_info").show();
 
       $('#tick_sound')[0].play();
@@ -108,6 +125,7 @@ $(document).ready(function() {
     }
   };
 
+  // Setup event for Enter key.
   $(document).keyup(function (e) {
     if(e.which == 13 && !$("#main_btn").prop('disabled')){
       button_action();
